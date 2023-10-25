@@ -107,7 +107,7 @@ contract GoldBullionNFT is ERC721, ERC721Burnable, AccessControl {
         DepositFees storage depFees = depositFees[tokenId];
 
         require(depFees.minter == msg.sender, "you are not minter for that token!");
-        require(depFees.dueDate < block.timestamp, "the time has not come yet!");
+        require(depFees.dueDate <= block.timestamp, "the time has not come yet!");
         require(depFees.paid >= depFees.fee, "hasn't been paid yet!");
 
         uint256 fee = depFees.fee;
@@ -121,7 +121,7 @@ contract GoldBullionNFT is ERC721, ERC721Burnable, AccessControl {
         DepositFees storage depFees = depositFees[tokenId];
 
         require(depFees.minter == msg.sender, "you are not minter for that token!");
-        require(depFees.dueDate < block.timestamp, "the time has not come yet!");
+        require(depFees.dueDate <= block.timestamp, "the time has not come yet!");
         require(depFees.paid < depFees.fee, "has been paid already!");
 
         depFees.state = State.DISPUTE;
@@ -136,7 +136,7 @@ contract GoldBullionNFT is ERC721, ERC721Burnable, AccessControl {
         depFees.disputeValue = 0;
         depFees.paid = 0;
         depFees.state = State.PENDING;
-        transferFrom(owner, depFees.minter, tokenId);
+        _transfer(owner, depFees.minter, tokenId);
         emit Dispute(tokenId, false);
 
         payable(owner).transfer(toReturn);
