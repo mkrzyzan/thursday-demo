@@ -11,7 +11,7 @@ import "@openzeppelin/contracts@4.9.3/utils/Strings.sol";
 /**
 * @title ContractName
 * @dev ContractDescription
-* @custom:dev-run-script scripts/myFunc.js
+* @custom:dev-run-script scripts/initEcosystem.js
 */
 contract GoldBullionNFT is ERC721, ERC721Burnable, AccessControl {
     using Strings for uint256;
