@@ -39,9 +39,9 @@ contract GoldBullionNFT is ERC721, ERC721Burnable, AccessControl {
     }
 
     // gas 344275 (3.8 USD)
-    function safeMint(address to, uint256 tokenId, string memory data, string memory pictureUrl) 
+    function safeMint(uint256 tokenId, string memory data, string memory pictureUrl) 
     public onlyRole(GOLD_KEEPER) {
-        _safeMint(to, tokenId);
+        _safeMint(msg.sender, tokenId);
         onchaindata[tokenId].data = data;
         onchaindata[tokenId].imageUrl = pictureUrl;
         depositFees[tokenId].minter = msg.sender;
