@@ -19,6 +19,9 @@ async function init() {
             {desc: '37.12g;99.99%;MTS Premium Bullion;MTS;MTS Gold Co., Ltd.', id: 1},
             {desc: '22.00g;99.00%;MTS Premium Bullion;MTS;MTS Gold Co., Ltd.', id: 2},
             {desc: '100.98g;98.00%;MTS Premium Bullion;MTS;MTS Gold Co., Ltd.', id: 3},
+            {desc: '200.98g;97.00%;MTS Premium Bullion;MTS;MTS Gold Co., Ltd.', id: 4},
+            {desc: '300.98g;80.00%;MTS Premium Bullion;MTS;MTS Gold Co., Ltd.', id: 5},
+            {desc: '400.98g;80.00%;MTS Premium Bullion;MTS;MTS Gold Co., Ltd.', id: 6},
         ]
 
         promiseTxes = tokens.map(async bar => {
@@ -31,6 +34,9 @@ async function init() {
             {id: 1, from: mainAddress, to: '0x51d7903d39aE5939214f9Fb57036b43366AA537d'},
             {id: 2, from: mainAddress, to: '0x51d7903d39aE5939214f9Fb57036b43366AA537d'},
             {id: 3, from: mainAddress, to: '0x7BA3E64b8Da538AbB7C3Adc72002A2fAF3657d77'},
+            {id: 4, from: mainAddress, to: '0xf23f09778fFf11fA30FB51dafF211129619e8d40'},  // Masahiro
+            {id: 5, from: mainAddress, to: '0xf23f09778fFf11fA30FB51dafF211129619e8d40'},  // Masahiro
+            {id: 6, from: mainAddress, to: '0xf23f09778fFf11fA30FB51dafF211129619e8d40'},  // Masahiro
         ]
 
         transferPromises = transfers.map(async bar => {
