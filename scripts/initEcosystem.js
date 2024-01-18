@@ -15,21 +15,29 @@ async function init() {
         // mint 4 tokens, and give them to Olive (0x7BA3E64b8Da538AbB7C3Adc72002A2fAF3657d77)
         const imageUrl = 'https://nowszawersja.pages.dev/images?file=8888';
 
-        txs = [];
-        for (i = 0; i < 4; i++) {
-            nftData = `37.${i}g;99.${i}%;MTS Premium Bullion;MTS;MTS Gold Co., Ltd.`;
-            tx = await contract.safeMint(i, nftData, imageUrl);
-            txs.push(tx.wait());
-        }
-        Promise.all(txs);
+        tokens = [
+            {desc: '37.12g;99.99%;MTS Premium Bullion;MTS;MTS Gold Co., Ltd.', id: 1},
+            {desc: '22.00g;99.00%;MTS Premium Bullion;MTS;MTS Gold Co., Ltd.', id: 2},
+            {desc: '100.98g;98.00%;MTS Premium Bullion;MTS;MTS Gold Co., Ltd.', id: 3},
+        ]
 
-        txs = [];
-        for (i = 0; i < 4; i++) {
-            nftData = `37.${i}g;99.${i}%;MTS Premium Bullion;MTS;MTS Gold Co., Ltd.`;
-            tx = await contract.transferFrom(mainAddress, '0x7BA3E64b8Da538AbB7C3Adc72002A2fAF3657d77', i);
-            txs.push(tx.wait());
-        }
-        Promise.all(txs);
+        promiseTxes = tokens.map(async bar => {
+            tx = await contract.safeMint(bar.id, bar.desc, imageUrl);
+            return tx.wait();
+        })
+        await Promise.all(promiseTxes);
+
+        transfers = [
+            {id: 1, from: mainAddress, to: '0x51d7903d39aE5939214f9Fb57036b43366AA537d'},
+            {id: 2, from: mainAddress, to: '0x51d7903d39aE5939214f9Fb57036b43366AA537d'},
+            {id: 3, from: mainAddress, to: '0x7BA3E64b8Da538AbB7C3Adc72002A2fAF3657d77'},
+        ]
+
+        transferPromises = transfers.map(async bar => {
+            tx = await contract.transferFrom(bar.from, bar.to, bar.id);
+            return tx.wait();
+        })
+        await Promise.all(transferPromises);
 
         console.log('finish');
     } catch(err) {
