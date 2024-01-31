@@ -33,7 +33,7 @@ contract GoldBullionNFT is ERC721, ERC721Burnable, AccessControl {
     mapping (uint256 => GoldBulionDetails) onchaindata;
 
     // 3000000 (33 USD)
-    constructor() ERC721("Gold Vault", "GLDVLT") {
+    constructor() ERC721("Gold Vault Bangkok", "GLDVLTBKK") {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(GOLD_KEEPER, msg.sender);
     }
@@ -45,6 +45,7 @@ contract GoldBullionNFT is ERC721, ERC721Burnable, AccessControl {
         onchaindata[tokenId].data = data;
         onchaindata[tokenId].imageUrl = pictureUrl;
         depositFees[tokenId].minter = msg.sender;
+        depositFees[tokenId].state = State.COLLECTED;
     }
 
     // if we can pack all gold data in uint256 then no extra data needed
@@ -87,6 +88,7 @@ contract GoldBullionNFT is ERC721, ERC721Burnable, AccessControl {
     function payDepositFees(uint256 tokenId) public payable {
         DepositFees storage depFees = depositFees[tokenId];
 
+        require (State.PENDING == depFees.state, "not allowed in this state");
         require (ownerOf(tokenId) == msg.sender, "You not owner of that tokenId!");
         require (msg.value >= depFees.fee, "value lower than deposit fees!");
 
@@ -96,6 +98,7 @@ contract GoldBullionNFT is ERC721, ERC721Burnable, AccessControl {
     function setDespositFees(uint256 tokenId, uint256 fee, uint256 dueDateSec) public {
         DepositFees storage depFees = depositFees[tokenId];
 
+        require(State.COLLECTED == depFees.state, "not allowed in this state");
         require(depFees.minter == msg.sender, "you are not minter for that token!");
 
         depFees.fee = fee;
@@ -106,16 +109,17 @@ contract GoldBullionNFT is ERC721, ERC721Burnable, AccessControl {
     function collectDepositFees(uint256 tokenId) public {
         DepositFees storage depFees = depositFees[tokenId];
 
+        require(State.PAID == depFees.state, "not allowed in this state");
         require(depFees.minter == msg.sender, "you are not minter for that token!");
         require(depFees.dueDate <= block.timestamp, "the time has not come yet!");
         require(depFees.paid >= depFees.fee, "hasn't been paid yet!");
 
-        uint256 fee = depFees.fee;
-        depFees.paid -= fee;
+        uint256 feeToCollect = depFees.paid;
+        depFees.paid = 0;
         depFees.fee = 0;
         depFees.state = State.COLLECTED;
 
-        payable (msg.sender).transfer(fee);
+        payable (msg.sender).transfer(feeToCollect);
     }
     function claimNftBack(uint256 tokenId) public payable {
         DepositFees storage depFees = depositFees[tokenId];
